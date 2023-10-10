@@ -7,3 +7,11 @@ class Dish(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Meal(models.Model):
+    dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
+    date = models.DateField()
+
+    def __str__(self):
+        return f"{self.dish} on {self.date}"
