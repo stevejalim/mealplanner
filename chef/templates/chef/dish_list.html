@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+Meal planner
+{% endblock page_title %}
+
+{% block content %}
+    <header>
+        <h1><a href="/">Your dishes</a></h1>
+    </header>
+    <ul>
+        {% for dish in dishes %}
+            <li>
+                <a href='{% url "dish-update" dish.id %}'>
+                  {{dish.title}}
+                </a>
+            </li>
+
+
+        {% endfor %}
+    </ul>
+
+
+    <p>
+    <input value="Add a new dish" type="button"
+    onclick="location.href='{% url "dish-add"%}'"/>
+    </p>
+
+{% endblock content %}

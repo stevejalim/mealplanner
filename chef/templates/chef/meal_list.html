@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+Meal planner
+{% endblock page_title %}
+
+
+{% block content %}
+<header>
+  <h1><a href="/">Meal schedule</a></h1>
+</header>
+
+<ul>
+  {% for meal in meals %}
+  <li>
+    <a href='{% url "meal-update" meal.id %}'>
+        {{ meal.dish.title }} on {{meal.date|date}}</li>
+  {% endfor %}
+</ul>
+
+<ul>
+    {% for dish in dishes %}
+        <li>
+            <a href='{% url "dish-update" dish.id %}'>
+              {{dish.title}}
+            </a>
+        </li>
+
+
+    {% endfor %}
+</ul>
+
+
+
+<p>
+    <a href="{% url 'dish-list' %}">View all dishes</a>
+</p>
+{% endblock content %}
