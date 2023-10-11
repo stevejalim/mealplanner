@@ -6,7 +6,7 @@ Meal planner
 
 {% block content %}
     <header>
-        <h1><a href="/">Your dishes</a></h1>
+        <h1>Your dishes</h1>
     </header>
     <ul>
         {% for dish in dishes %}
@@ -24,6 +24,11 @@ Meal planner
     <p>
     <input value="Add a new dish" type="button"
     onclick="location.href='{% url "dish-add"%}'"/>
+    </p>
+
+
+    <p>
+        <a href='{% url "meal-schedule" %}'/>Return to meal schedule</a>
     </p>
 
 {% endblock content %}

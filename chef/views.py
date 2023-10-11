@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.urls import reverse
 from .models import Dish, Meal
 from django.utils import timezone
 from django.views.generic import (
@@ -11,12 +12,12 @@ from django.views.generic import (
 # Create your views here.
 
 
-def show_schedule(request):
+def meal_schedule(request):
 
     date_now = timezone.now().date()
     meals = Meal.objects.filter(date__gte=date_now).order_by("date")
 
-    return render(request, "chef/meal_list.html", {"meals": meals})
+    return render(request, "chef/meal_schedule.html", {"meals": meals})
 
 
 def dish_list(request):
@@ -25,6 +26,8 @@ def dish_list(request):
 
 
 class DishCreate(CreateView):
+
+    # The automatic template _name_ generated for this view is dish_form.html
 
     model = Dish
     fields = [
@@ -41,6 +44,8 @@ class DishCreate(CreateView):
 
 
 class DishUpdate(UpdateView):
+
+    # The automatic template _name_ generated for this view is dish_form.html
 
     model = Dish
     fields = [
@@ -61,6 +66,8 @@ class DishUpdate(UpdateView):
 
 class MealUpdate(UpdateView):
 
+    # The automatic template _name_ generated for this view is meal_form.html
+
     model = Meal
     fields = [
         "dish",
@@ -75,4 +82,11 @@ class MealUpdate(UpdateView):
 
     def get_success_url(self):
 
-        return reverse("show-schedule")
+        return reverse("meal-schedule")
+
+
+def meal_list(request):
+
+    meals = Meal.objects.all().order_by("date")
+
+    return render(request, "chef/meal_list.html", {"meals": meals})
