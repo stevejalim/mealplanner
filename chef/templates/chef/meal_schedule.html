@@ -21,8 +21,14 @@ Meal planner
 
 
 <p>
-  <a href="{% url 'dish-list' %}">Choose from your library of dishes</a>
+  <a href="{% url 'dish-list' %}">Browse your library of dishes</a>
 </p>
+
+<p>
+  <input value="Schedule a new meal" type="button"
+  onclick="location.href='{% url "meal-add"%}'"/>
+  </p>
+
 
 
 <p>
