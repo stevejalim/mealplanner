@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block content %}
+
+<h3>Delete Meal</h3>
+
+<p>
+  Are you sure you want to delete <b>{{ object.dish.title }} on {{ object.date|date }} </b> from the
+  schedule?</i>
+</p>
+
+<form method="POST">
+  {% csrf_token %}
+  <input value="Yes, delete" type="submit" />
+  {% url 'meal-list' as fallback_url %}
+  <input value="Cancel" type="button" onclick="goBack({{fallback_url}})">
+</form>
+
+{% endblock %}

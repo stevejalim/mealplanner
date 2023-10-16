@@ -42,6 +42,10 @@ class DishCreate(CreateView):
 
         return context
 
+    def get_success_url(self):
+
+        return reverse("dish-list")
+
 
 class DishUpdate(UpdateView):
 
@@ -64,6 +68,35 @@ class DishUpdate(UpdateView):
         return reverse("dish-list")
 
 
+class DishDelete(DeleteView):
+    model = Dish
+
+    def get_success_url(self):
+        return reverse("dish-list")
+
+
+class MealCreate(CreateView):
+
+    # The automatic template _name_ generated for this view is meal_form.html
+
+    model = Meal
+    fields = [
+        "dish",
+        "date",
+    ]
+
+    def get_context_data(self):
+
+        context = super().get_context_data()
+        context["title"] = "Schedule a new meal"
+
+        return context
+
+    def get_success_url(self):
+
+        return reverse("meal-schedule")
+
+
 class MealUpdate(UpdateView):
 
     # The automatic template _name_ generated for this view is meal_form.html
@@ -82,6 +115,13 @@ class MealUpdate(UpdateView):
 
     def get_success_url(self):
 
+        return reverse("meal-schedule")
+
+
+class MealDelete(DeleteView):
+    model = Meal
+
+    def get_success_url(self):
         return reverse("meal-schedule")
 
 

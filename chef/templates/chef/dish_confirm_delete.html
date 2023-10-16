@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block content %}
+
+<h3>Delete Dish</h3>
+
+<p>
+  Are you sure you want to delete <b>{{ object.title }} </b> from your dish library?</i>
+</p>
+
+<form method="POST">
+  {% csrf_token %}
+  <input value="Yes, delete" type="submit" />
+  {% url 'dish-list' as fallback_url %}
+  <input value="Cancel" type="button" onclick="goBack({{fallback_url}})">
+</form>
+
+{% endblock %}
