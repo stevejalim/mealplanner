@@ -11,12 +11,14 @@
 
   <input value="Submit" type="submit" />
 
-  <input value="Cancel" type="button" onclick="location.href='{% url "dish-list" %}'">
   {% comment %} {% if object %}
     <input value="Delete this item"
     type="button"
     onclick="location.href= '{% url "dish-delete" object.id %}'">
 {% endif %} {% endcomment %}
+    {% url 'dish_list' as fallback_url %}
+
+    <input value="Cancel" type="button" onclick="goBack('{{fallback_url}}')">
 </form>
 
 {% endblock %}

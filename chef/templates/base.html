@@ -18,5 +18,13 @@
     {% block content %}
 
     {% endblock content %}
-  </body>
+
+    {% block js %}
+    <script>
+        function goBack(fallbackUrl){
+            if(history.length > 1 ){ history.back() } else { window.location.href=fallbackUrl };
+        }
+    </script>
+    {% endblock js %}
+</body>
 </html>
