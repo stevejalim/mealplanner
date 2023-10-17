@@ -127,7 +127,17 @@ class DishDelete(DeleteView):
         return reverse("dish-list")
 
 
-class MealCreate(CreateView):
+class FormDateInputMixin:
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Django's DateInput uses type = "text", but we can force it
+        # to "date" to get a datepicker from the browser
+        for fieldname in self.date_fields:
+            form.fields[fieldname].widget.input_type = "date"
+        return form
+
+
+class MealCreate(FormDateInputMixin, CreateView):
 
     # The automatic template _name_ generated for this view is meal_form.html
 
@@ -136,6 +146,7 @@ class MealCreate(CreateView):
         "dish",
         "date",
     ]
+    date_fields = ["date"]
 
     def get_context_data(self):
 
@@ -149,7 +160,7 @@ class MealCreate(CreateView):
         return reverse("meal-schedule")
 
 
-class MealUpdate(UpdateView):
+class MealUpdate(FormDateInputMixin, UpdateView):
 
     # The automatic template _name_ generated for this view is meal_form.html
 
@@ -158,6 +169,7 @@ class MealUpdate(UpdateView):
         "dish",
         "date",
     ]
+    date_fields = ["date"]
 
     def get_context_data(self):
 
