@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -55,7 +55,7 @@ ROOT_URLCONF = "mealplanner.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -125,3 +125,26 @@ STATIC_ROOT = BASE_DIR / "static"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Django registration
+
+ACCOUNT_ACTIVATION_DAYS = 7  # One-week activation window
+
+# For now, after signing in, go to the root page, which is the meal schedule
+LOGIN_REDIRECT_URL = "/"
+
+# Email setup
+if (
+    os.getenv("EMAIL_HOST")
+    and os.getenv("EMAIL_HOST_PASSWORD")
+    and os.getenv("EMAIL_HOST_USER")
+):
+    print("Using SMTP email")
+    EMAIL_HOST = os.getenv("EMAIL_HOST")
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+else:
+    print("Warning! Using console backend for email!")
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
