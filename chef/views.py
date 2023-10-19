@@ -63,6 +63,9 @@ class DishCreate(SetOwnerMixin, CreateView):
 
         # Check the referrer to see if we came from the meal-creation view
         referring_url = request.META.get("HTTP_REFERER")
+        if not referring_url:
+            return
+
         # referring_url is the whole thing eg https://example.com/meal/add/
         # but we only want /meal/add/ which comes after the example.com hostname
 
