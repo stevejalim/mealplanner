@@ -15,13 +15,21 @@ from django.views.generic import (
 def meal_schedule(request):
 
     date_now = timezone.now().date()
-    meals = Meal.objects.filter(date__gte=date_now).order_by("date")
+
+    if request.user.is_authenticated:
+        meals = (
+            Meal.objects.filter(date__gte=date_now)
+            .order_by("date")
+            .filter(owner=request.user)
+        )
+    else:
+        meals = Meal.objects.none()
 
     return render(request, "chef/meal_schedule.html", {"meals": meals})
 
 
 def dish_list(request):
-    dishes = Dish.objects.all().order_by("title")
+    dishes = Dish.objects.all().order_by("title").filter(owner=request.user)
     return render(request, "chef/dish_list.html", {"dishes": dishes})
 
 
