@@ -33,7 +33,20 @@ def dish_list(request):
     return render(request, "chef/dish_list.html", {"dishes": dishes})
 
 
-class DishCreate(CreateView):
+class SetOwnerMixin:
+    def form_valid(self, form):
+        # first save the form as normal, using the method from the superclass
+        # which sets self.object to be the thing we just saved
+        retval = super().form_valid(form)
+
+        # then tack on who the owner is:
+        self.object.owner = self.request.user
+        self.object.save()  # Needing a second save is not the most efficient solution, but it's fine for now
+
+        return retval
+
+
+class DishCreate(SetOwnerMixin, CreateView):
 
     # The automatic template _name_ generated for this view is dish_form.html
 
@@ -145,7 +158,7 @@ class FormDateInputMixin:
         return form
 
 
-class MealCreate(FormDateInputMixin, CreateView):
+class MealCreate(FormDateInputMixin, SetOwnerMixin, CreateView):
 
     # The automatic template _name_ generated for this view is meal_form.html
 
@@ -200,5 +213,4 @@ class MealDelete(DeleteView):
 def meal_list(request):
 
     meals = Meal.objects.all().order_by("date")
-
     return render(request, "chef/meal_list.html", {"meals": meals})
