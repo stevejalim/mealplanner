@@ -7,6 +7,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 
 # Create your views here.
@@ -123,7 +124,7 @@ class DishCreate(SetOwnerMixin, CreateView):
         return reverse("dish-list")
 
 
-class DishUpdate(UpdateView):
+class DishUpdate(UserPassesTestMixin, UpdateView):
 
     # The automatic template _name_ generated for this view is dish_form.html
 
@@ -132,6 +133,11 @@ class DishUpdate(UpdateView):
         "title",
         "text",
     ]
+
+    # raise_exception is from AccessMixin (via UserPassesTestMixin):
+    # complain about unauthorised users, rather than redirect to login
+    raise_exception = True
+    permission_denied_message = "That's not yours to update!"
 
     def get_context_data(self):
 
@@ -142,6 +148,11 @@ class DishUpdate(UpdateView):
     def get_success_url(self):
 
         return reverse("dish-list")
+
+    def test_func(self):
+        # Used by UserPassesTestMixin to determine if access is allowed
+        dish = self.get_object()
+        return self.request.user == dish.owner
 
 
 class DishDelete(DeleteView):
