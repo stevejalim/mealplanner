@@ -155,11 +155,21 @@ class DishUpdate(UserPassesTestMixin, UpdateView):
         return self.request.user == dish.owner
 
 
-class DishDelete(DeleteView):
+class DishDelete(UserPassesTestMixin, DeleteView):
     model = Dish
+
+    # raise_exception is from AccessMixin (via UserPassesTestMixin):
+    # complain about unauthorised users, rather than redirect to login
+    raise_exception = True
+    permission_denied_message = "That's not yours to delete!"
 
     def get_success_url(self):
         return reverse("dish-list")
+
+    def test_func(self):
+        # Used by UserPassesTestMixin to determine if access is allowed
+        dish = self.get_object()
+        return self.request.user == dish.owner
 
 
 class FormDateInputMixin:
