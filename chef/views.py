@@ -205,7 +205,7 @@ class MealCreate(FormDateInputMixin, SetOwnerMixin, CreateView):
         return reverse("meal-schedule")
 
 
-class MealUpdate(FormDateInputMixin, UpdateView):
+class MealUpdate(UserPassesTestMixin, FormDateInputMixin, UpdateView):
 
     # The automatic template _name_ generated for this view is meal_form.html
 
@@ -216,11 +216,21 @@ class MealUpdate(FormDateInputMixin, UpdateView):
     ]
     date_fields = ["date"]
 
+    # raise_exception is from AccessMixin (via UserPassesTestMixin):
+    # complain about unauthorised users, rather than redirect to login
+    raise_exception = True
+    permission_denied_message = "That's not yours to update!"
+
     def get_context_data(self):
 
         context = super().get_context_data()
         context["title"] = "Edit meal"
         return context
+
+    def test_func(self):
+        # Used by UserPassesTestMixin to determine if access is allowed
+        meal = self.get_object()
+        return self.request.user == meal.owner
 
     def get_success_url(self):
 
