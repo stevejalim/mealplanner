@@ -237,11 +237,21 @@ class MealUpdate(UserPassesTestMixin, FormDateInputMixin, UpdateView):
         return reverse("meal-schedule")
 
 
-class MealDelete(DeleteView):
+class MealDelete(UserPassesTestMixin, DeleteView):
     model = Meal
+
+    # raise_exception is from AccessMixin (via UserPassesTestMixin):
+    # complain about unauthorised users, rather than redirect to login
+    raise_exception = True
+    permission_denied_message = "That's not yours to delete!"
 
     def get_success_url(self):
         return reverse("meal-schedule")
+
+    def test_func(self):
+        # Used by UserPassesTestMixin to determine if access is allowed
+        meal = self.get_object()
+        return self.request.user == meal.owner
 
 
 def meal_list(request):
