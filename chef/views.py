@@ -203,6 +203,12 @@ class MealCreate(FormDateInputMixin, SetOwnerMixin, CreateView):
 
         return reverse("meal-schedule")
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["owner"] = self.request.user
+
+        return kwargs
+
 
 class MealUpdate(UserPassesTestMixin, FormDateInputMixin, UpdateView):
 
@@ -223,6 +229,12 @@ class MealUpdate(UserPassesTestMixin, FormDateInputMixin, UpdateView):
         context = super().get_context_data()
         context["title"] = "Edit meal"
         return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["owner"] = self.request.user
+
+        return kwargs
 
     def test_func(self):
         # Used by UserPassesTestMixin to determine if access is allowed
