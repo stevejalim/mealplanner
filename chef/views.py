@@ -8,6 +8,7 @@ from django.views.generic import (
     DeleteView,
 )
 from django.contrib.auth.mixins import UserPassesTestMixin
+from .forms import MealForm
 
 
 # Create your views here.
@@ -187,10 +188,8 @@ class MealCreate(FormDateInputMixin, SetOwnerMixin, CreateView):
     # The automatic template _name_ generated for this view is meal_form.html
 
     model = Meal
-    fields = [
-        "dish",
-        "date",
-    ]
+    form_class = MealForm
+
     date_fields = ["date"]
 
     def get_context_data(self):
@@ -210,10 +209,8 @@ class MealUpdate(UserPassesTestMixin, FormDateInputMixin, UpdateView):
     # The automatic template _name_ generated for this view is meal_form.html
 
     model = Meal
-    fields = [
-        "dish",
-        "date",
-    ]
+    form_class = MealForm
+
     date_fields = ["date"]
 
     # raise_exception is from AccessMixin (via UserPassesTestMixin):
