@@ -12,6 +12,9 @@ class Dish(models.Model):
         null=True,
     )
 
+    class Meta:
+        verbose_name_plural = "dishes"
+
     def __str__(self):
         return self.title
 
