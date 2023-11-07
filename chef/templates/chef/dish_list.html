@@ -8,11 +8,26 @@ Meal planner
     <header>
         <h1>Your dishes</h1>
     </header>
+
+    <form action="." method="get">
+        <input name="q" type="text" placeholder="Search..."  value="{{ request.GET.q }}">
+
+        <button type="submit">Search</button>
+
+        <a href="{% url 'dish-list' %}" class="button">Reset</a>
+
+    </form>
+
+
+
     <ul>
         {% for dish in dishes %}
             <li>
                 <a href='{% url "dish-update" dish.id %}'>
                   {{dish.title}}
+                </a>
+                <a href='{% url "meal-add" %}?dish_id={{ dish.id }}'>
+                    🥘
                 </a>
             </li>
 

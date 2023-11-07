@@ -9,6 +9,7 @@ from django.views.generic import (
 )
 from django.contrib.auth.mixins import UserPassesTestMixin
 from .forms import MealForm
+from django.db.models import Q
 
 
 # Create your views here.
@@ -32,6 +33,10 @@ def meal_schedule(request):
 
 def dish_list(request):
     dishes = Dish.objects.all().order_by("title").filter(owner=request.user)
+
+    if "q" in request.GET:
+        query = request.GET["q"]
+        dishes = dishes.filter(Q(title__icontains=query) | Q(text__icontains=query))
     return render(request, "chef/dish_list.html", {"dishes": dishes})
 
 
@@ -198,6 +203,13 @@ class MealCreate(FormDateInputMixin, SetOwnerMixin, CreateView):
         context["title"] = "Schedule a new meal"
 
         return context
+
+    def get_initial(self):
+        initial_data = super().get_initial()
+        if "dish_id" in self.request.GET:
+            dish_id = self.request.GET["dish_id"]
+            initial_data["dish"] = dish_id
+        return initial_data
 
     def get_success_url(self):
 
