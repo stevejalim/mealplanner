@@ -110,6 +110,12 @@ class DishCreate(SetOwnerMixin, CreateView):
 
         return context
 
+    def get_initial(self):
+        initial_data = super().get_initial()
+        if "term" in self.request.GET:
+            initial_data["title"] = self.request.GET["term"]
+        return initial_data
+
     def get_success_url(self):
 
         # Is there a special URL in the session? If so redirect to there.

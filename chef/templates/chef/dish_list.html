@@ -38,7 +38,7 @@ Meal planner
 
     <p>
     <input value="Add a new dish" type="button"
-    onclick="location.href='{% url "dish-add"%}'"/>
+    onclick="location.href='{% url "dish-add"%}?term={{request.GET.q}}'"/>
     </p>
 
 
