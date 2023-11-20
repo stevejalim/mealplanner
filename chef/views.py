@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse, resolve, Resolver404
 from .models import Dish, Meal
 from django.utils import timezone
@@ -7,8 +7,10 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 from .forms import MealForm
+from django.db import IntegrityError
 from django.db.models import Q
 
 
@@ -48,7 +50,23 @@ class SetOwnerMixin:
 
         # then tack on who the owner is:
         self.object.owner = self.request.user
-        self.object.save()  # Needing a second save is not the most efficient solution, but it's fine for now
+
+        # catch an IntegrityError due to a database constraint and redirect the user to the homepage
+        try:
+            self.object.save()  # Needing a second save is not the most efficient solution, but it's fine for now
+        except IntegrityError:
+
+            # item_description = "That"
+            # if hasattr(self.object, "title"):
+            #     item_description = self.object.title
+
+            item_description = getattr(self.object, "title", "That")
+
+            messages.warning(
+                self.request,
+                f"{item_description} was a duplicate, which is not allowed",
+            )
+            return redirect(self.request.path)
 
         return retval
 

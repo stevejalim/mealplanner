@@ -14,6 +14,11 @@ class Dish(models.Model):
 
     class Meta:
         verbose_name_plural = "dishes"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["title", "owner"], name="unique_dish_title_per_owner"
+            )
+        ]
 
     def __str__(self):
         return self.title

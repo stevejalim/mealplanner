@@ -32,6 +32,16 @@
       </div>
     {% endblock login_buttons %}
 
+    <div class='messages-wrapper'>
+      {% if messages %}
+          {% for message in messages %}
+              <p class="notice {{ message.tags }}">
+                  {{ message }}
+              </p>
+          {% endfor %}
+      {% endif %}
+    </div>
+
     {% block content %}
 
     {% endblock content %}
