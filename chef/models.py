@@ -35,4 +35,4 @@ class Meal(models.Model):
     )
 
     def __str__(self):
-        return f"{self.dish} on {self.date}"
+        return f"{self.dish.title} on {self.date}"
