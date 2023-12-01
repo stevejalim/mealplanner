@@ -301,5 +301,5 @@ class MealDelete(UserPassesTestMixin, DeleteView):
 
 def meal_list(request):
 
-    meals = Meal.objects.all().order_by("date")
+    meals = Meal.objects.order_by("date").filter(owner=request.user)
     return render(request, "chef/meal_list.html", {"meals": meals})
