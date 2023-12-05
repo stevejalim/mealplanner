@@ -14,5 +14,5 @@ class MealForm(forms.ModelForm):
         owner = kwargs.pop("owner")
         super().__init__(*args, **kwargs)
         self.fields["dish"] = forms.ModelChoiceField(
-            queryset=Dish.objects.filter(owner=owner),
+            queryset=Dish.objects.filter(owner=owner).order_by("title"),
         )
