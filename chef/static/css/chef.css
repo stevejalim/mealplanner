@@ -1,0 +1,64 @@
+.login-buttons {
+    margin-top: 10px;
+    text-align: right;
+}
+ul.meal-schedule,
+ul.meal-week {
+    list-style: none;
+    padding-left: 0;
+}
+/*ul.meal-week {
+    display: flex;
+    flex-direction: row;
+    li {
+        flex-grow: 1;
+        border: 1px solid gray;
+        border-collapse: collapse;
+        padding: 10px;
+
+        span.date {
+            display: block;
+        }
+        span.no-meals{
+            color:gray;
+        }
+        span.meal{
+            font-weight: bold;
+            /* line-break: anywhere;
+        }
+    }
+}*/
+
+body.meal-schedule {
+    display: grid;
+    grid-template-columns: 1fr 7fr 1fr;
+}
+ul.meal-week {
+
+    display: grid;
+    grid-template-columns: repeat(7, minmax(150px, max-content));
+    gap: 10px;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+
+    hr {
+        border: 1px solid gray;
+        background: none;
+    }
+
+    li {
+        display: grid;
+        grid-template-rows: 30px 5fr;
+        padding: 5px;
+        border-style: solid;
+        border-color: black;
+        border-width: 1px;
+
+
+        span.date {
+            border-bottom: 1px solid black;
+            display: block;
+        }
+    }
+}
