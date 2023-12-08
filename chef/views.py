@@ -1,34 +1,43 @@
+from datetime import timedelta
+
+from django.contrib import messages
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.db import IntegrityError
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse, resolve, Resolver404
-from .models import Dish, Meal
 from django.utils import timezone
 from django.views.generic import (
     CreateView,
     UpdateView,
     DeleteView,
 )
-from django.contrib import messages
-from django.contrib.auth.mixins import UserPassesTestMixin
-from .forms import MealForm
-from django.db import IntegrityError
-from django.db.models import Q
 
+from .forms import MealForm
+from .helpers import meals_for_week, first_day_of_week
+from .models import Dish, Meal
 
 # Create your views here.
 
 
 def meal_schedule(request):
 
+    meals = {}
     date_now = timezone.now().date()
 
     if request.user.is_authenticated:
-        meals = (
-            Meal.objects.filter(date__gte=date_now)
-            .order_by("date")
-            .filter(owner=request.user)
-        )
-    else:
-        meals = Meal.objects.none()
+
+        # get the starts of week for the weeks we care about
+        start_of_this_week = first_day_of_week(date_now)
+        start_of_last_week = start_of_this_week - timedelta(days=7)
+        start_of_next_week = start_of_this_week + timedelta(days=7)
+
+        # now get the relevant meals info for each week and add it to our
+        # overall meals dictionary
+
+        meals["Last week"] = meals_for_week(start_of_last_week, request.user)
+        meals["This week"] = meals_for_week(start_of_this_week, request.user)
+        meals["Next week"] = meals_for_week(start_of_next_week, request.user)
 
     return render(request, "chef/meal_schedule.html", {"meals": meals})
 

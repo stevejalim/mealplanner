@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load chef_tags %}
 {% block page_title %}
 Meal planner
 {% endblock page_title %}
@@ -11,11 +11,34 @@ Meal planner
   <h1>Meal schedule</h1>
 </header>
 
-<ul>
-  {% for meal in meals %}
-  <li>
-    <a href='{% url "meal-update" meal.id %}'>
-        {{ meal.dish.title }} on {{meal.date|date}}</li>
+<ul class="meal-schedule">
+  {% for meal_week_label, meals_for_that_week in meals.items %}
+    <li>
+      <h2>{{meal_week_label}}</h2>
+      <ul class="meal-week">
+        {% for date_key, meals_on_day in meals_for_that_week.items %}
+          {% if not meals_on_day %}
+            <li>
+              <span class="date">{{date_key|friendly_date}}</span>
+              <p class="no-meals">No meals scheduled today</p>
+            </li>
+          {% else %}
+          <li>
+            <span class="date">{{date_key|friendly_date}}</span>
+            {% for meal in meals_on_day %}
+              <p class="meal">
+                <a href='{% url "meal-update" meal.id %}'>
+                    {{ meal.dish.title }}
+                </a>
+              </p>
+              {% if not forloop.last %}<hr>{% endif %}
+            {% endfor %}
+          </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+
   {% endfor %}
 </ul>
 
