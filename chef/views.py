@@ -25,6 +25,8 @@ def meal_schedule(request):
     meals = {}
     date_now = timezone.now().date()
 
+    current_week_label = "This week"
+
     if request.user.is_authenticated:
 
         # get the starts of week for the weeks we care about
@@ -34,8 +36,6 @@ def meal_schedule(request):
 
         # now get the relevant meals info for each week and add it to our
         # overall meals dictionary
-
-        current_week_label = "This week"
 
         # NB: the order things are added to the dictionary is significant
         meals["Last week"] = meals_for_week(start_of_last_week, request.user)
