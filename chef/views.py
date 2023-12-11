@@ -35,11 +35,21 @@ def meal_schedule(request):
         # now get the relevant meals info for each week and add it to our
         # overall meals dictionary
 
+        current_week_label = "This week"
+
+        # NB: the order things are added to the dictionary is significant
         meals["Last week"] = meals_for_week(start_of_last_week, request.user)
-        meals["This week"] = meals_for_week(start_of_this_week, request.user)
+        meals[current_week_label] = meals_for_week(start_of_this_week, request.user)
         meals["Next week"] = meals_for_week(start_of_next_week, request.user)
 
-    return render(request, "chef/meal_schedule.html", {"meals": meals})
+    return render(
+        request,
+        "chef/meal_schedule.html",
+        {
+            "meals": meals,
+            "current_week_label": current_week_label,
+        },
+    )
 
 
 def dish_list(request):

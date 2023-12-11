@@ -13,7 +13,7 @@ Meal planner
 
 <ul class="meal-schedule">
   {% for meal_week_label, meals_for_that_week in meals.items %}
-    <li>
+    <li {% if meal_week_label == current_week_label %}class="current-week"{% endif %}>
       <h2>{{meal_week_label}}</h2>
       <ul class="meal-week">
         {% for date_key, meals_on_day in meals_for_that_week.items %}
