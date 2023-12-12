@@ -23,6 +23,9 @@ class Dish(models.Model):
     def __str__(self):
         return self.title
 
+    def get_latest_meal(self):
+        return self.meal_set.order_by("date").first()
+
 
 class Meal(models.Model):
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)

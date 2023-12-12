@@ -1,4 +1,4 @@
-from chef.models import Meal
+from chef.models import Dish, Meal
 from datetime import timedelta
 
 
@@ -43,3 +43,20 @@ def meals_for_week(start_date, current_user):
             meals_for_dates[date_as_string].append(meal)
 
     return meals_for_dates
+
+
+def suggest_dish(current_user, suggestion_limit=5):
+    # Returns a list of Dishes (not Meals),
+    # that belong to the current_user
+    # ordered by least recent,
+    # limited in number
+
+    least_recent_meals = Meal.objects.filter(owner=current_user).order_by("date")[
+        :suggestion_limit
+    ]
+    suggested_dishes = []
+    for meal in least_recent_meals:
+        suggested_dishes.append(meal.dish)
+    return suggested_dishes
+
+    # or return [meal.dish for meal in least_recent_meals]

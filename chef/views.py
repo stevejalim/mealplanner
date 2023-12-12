@@ -14,7 +14,7 @@ from django.views.generic import (
 )
 
 from .forms import MealForm
-from .helpers import meals_for_week, first_day_of_week
+from .helpers import meals_for_week, first_day_of_week, suggest_dish
 from .models import Dish, Meal
 
 # Create your views here.
@@ -58,7 +58,17 @@ def dish_list(request):
     if "q" in request.GET:
         query = request.GET["q"]
         dishes = dishes.filter(Q(title__icontains=query) | Q(text__icontains=query))
-    return render(request, "chef/dish_list.html", {"dishes": dishes})
+
+    least_recent_suggested_dishes = suggest_dish(request.user)
+
+    return render(
+        request,
+        "chef/dish_list.html",
+        {
+            "dishes": dishes,
+            "dish_suggestions": least_recent_suggested_dishes,
+        },
+    )
 
 
 class SetOwnerMixin:

@@ -18,8 +18,6 @@ Meal planner
 
     </form>
 
-
-
     <ul>
         {% for dish in dishes %}
             <li>
@@ -30,17 +28,29 @@ Meal planner
                     🥘
                 </a>
             </li>
-
-
         {% endfor %}
     </ul>
-
 
     <p>
     <input value="Add a new dish" type="button"
     onclick="location.href='{% url "dish-add"%}?term={{request.GET.q}}'"/>
     </p>
 
+    <h3>DISH SUGGESTIONS:</h3>
+
+    <ul>
+        {% for dish in dish_suggestions %}
+        <li>
+            <a href='{% url "dish-update" dish.id %}'>
+                {{dish.title}}
+            </a>
+            (last used: {{dish.get_latest_meal.date}})
+            <a href='{% url "meal-add" %}?dish_id={{ dish.id }}'>
+                🥘
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
 
     <p>
         <a href='{% url "meal-schedule" %}'/>Return to meal schedule</a>
