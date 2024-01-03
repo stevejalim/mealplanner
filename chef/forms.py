@@ -8,6 +8,7 @@ class MealForm(forms.ModelForm):
         fields = (
             "dish",
             "date",
+            "text",
         )
 
     def __init__(self, *args, **kwargs):
