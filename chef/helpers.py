@@ -51,9 +51,11 @@ def suggest_dish(current_user, suggestion_limit=5):
     # ordered by least recent,
     # limited in number
 
-    least_recent_meals = Meal.objects.filter(owner=current_user).order_by("date")[
-        :suggestion_limit
-    ]
+    least_recent_meals = (
+        Meal.objects.filter(owner=current_user)
+        .exclude(dish__exclude_from_suggestions=True)
+        .order_by("date")[:suggestion_limit]
+    )
     suggested_dishes = []
     for meal in least_recent_meals:
         suggested_dishes.append(meal.dish)

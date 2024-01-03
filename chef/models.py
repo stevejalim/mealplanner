@@ -12,6 +12,11 @@ class Dish(models.Model):
         null=True,
     )
 
+    exclude_from_suggestions = models.BooleanField(
+        default=False,
+        help_text="Meals marked with this, such as away days or dinner out will not be automatically suggested.",
+    )
+
     class Meta:
         verbose_name_plural = "dishes"
         constraints = [
@@ -30,6 +35,9 @@ class Dish(models.Model):
 class Meal(models.Model):
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     date = models.DateField()
+    text = models.TextField(
+        blank=True,
+    )
 
     owner = models.ForeignKey(
         User,
