@@ -20,7 +20,12 @@ Meal planner
           {% if not meals_on_day %}
             <li>
               <span class="date">{{date_key|friendly_date}}</span>
-              <p class="no-meals">No meals scheduled today</p>
+              <p class="no-meals">
+
+                <a href='{% url "meal-add" %}?date={{ date_key }}'>
+                  Add a meal
+                </a>
+              </p>
             </li>
           {% else %}
           <li>

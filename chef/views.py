@@ -108,6 +108,7 @@ class DishCreate(SetOwnerMixin, CreateView):
     fields = [
         "title",
         "text",
+        "exclude_from_suggestions",
     ]
 
     def setup(self, request, *args, **kwargs):
@@ -191,6 +192,7 @@ class DishUpdate(UserPassesTestMixin, UpdateView):
     fields = [
         "title",
         "text",
+        "exclude_from_suggestions",
     ]
 
     # raise_exception is from AccessMixin (via UserPassesTestMixin):
@@ -262,6 +264,10 @@ class MealCreate(FormDateInputMixin, SetOwnerMixin, CreateView):
         if "dish_id" in self.request.GET:
             dish_id = self.request.GET["dish_id"]
             initial_data["dish"] = dish_id
+
+        if "date" in self.request.GET:
+            the_date = self.request.GET["date"]
+            initial_data["date"] = the_date
         return initial_data
 
     def get_success_url(self):
