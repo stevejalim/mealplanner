@@ -1,5 +1,5 @@
 from chef.models import Dish, Meal
-from datetime import timedelta
+from datetime import date, timedelta
 
 
 def first_day_of_week(a_date):
@@ -51,11 +51,22 @@ def suggest_dish(current_user, suggestion_limit=5):
     # ordered by least recent,
     # limited in number
 
+    today = date.today()
+    blackout_start = today - timedelta(days=28)
+    blackout_end = today + timedelta(days=7)
+
     least_recent_meals = (
         Meal.objects.filter(owner=current_user)
         .exclude(dish__exclude_from_suggestions=True)
-        .order_by("date")[:suggestion_limit]
+        .exclude(
+            date__gte=blackout_start,
+            date__lte=blackout_end,
+        )
+        .order_by("date")
     )
+
+    least_recent_meals = least_recent_meals[:suggestion_limit]
+
     suggested_dishes = []
     for meal in least_recent_meals:
         suggested_dishes.append(meal.dish)

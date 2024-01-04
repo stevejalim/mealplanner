@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -83,7 +83,7 @@ class MealSuggestionTests(TestCase):
             owner=self.user,
         )
 
-    def test_suggest_dish_with_at_least_five_meals_in_history(self):
+    def test_suggest_dish_when_there_are_at_least_five_meals_in_history(self):
         suggestions = suggest_dish(current_user=self.user)
         expected = [self.dish_1, self.dish_2, self.dish_3, self.dish_4, self.dish_5]
         self.assertEqual(suggestions, expected)
@@ -118,4 +118,25 @@ class MealSuggestionTests(TestCase):
         assert Meal.objects.count() == 0
         suggestions = suggest_dish(current_user=self.user)
         expected = []
+        self.assertEqual(suggestions, expected)
+
+    def test_suggest_dish_respects_blackout_period(self):
+        # The blackout period is a number of days before and after the current day
+        # so that we don't get suggested things that were recently had, or are
+        # scheduled for the future
+
+        # Adjust two dishes to have dates within the blackout window
+        today = date.today()
+
+        two_day_days_ago = today - timedelta(days=2)
+        two_day_days_hence = today + timedelta(days=2)
+
+        self.meal_1.date = two_day_days_ago
+        self.meal_1.save()
+
+        self.meal_3.date = two_day_days_hence
+        self.meal_3.save()
+
+        suggestions = suggest_dish(current_user=self.user)
+        expected = [self.dish_2, self.dish_4, self.dish_5, self.dish_6]
         self.assertEqual(suggestions, expected)
