@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from chef.models import Dish, Meal
-from chef.helpers import suggest_dish
+from chef.helpers import suggest_dish_from_meals
 
 
 class MealSuggestionTests(TestCase):
@@ -83,44 +83,48 @@ class MealSuggestionTests(TestCase):
             owner=self.user,
         )
 
-    def test_suggest_dish_when_there_are_at_least_five_meals_in_history(self):
-        suggestions = suggest_dish(current_user=self.user)
+    def test_suggest_dish_from_meals_when_there_are_at_least_five_meals_in_history(
+        self,
+    ):
+        suggestions = suggest_dish_from_meals(current_user=self.user)
         expected = [self.dish_1, self.dish_2, self.dish_3, self.dish_4, self.dish_5]
         self.assertEqual(suggestions, expected)
 
-    def test_suggest_dish_has_variable_suggestion_limit(self):
-        suggestions = suggest_dish(current_user=self.user, suggestion_limit=2)
+    def test_suggest_dish_from_meals_has_variable_suggestion_limit(self):
+        suggestions = suggest_dish_from_meals(
+            current_user=self.user, suggestion_limit=2
+        )
         expected = [self.dish_1, self.dish_2]
         self.assertEqual(suggestions, expected)
 
-    def test_suggest_dish_with_less_than_five_meals_in_history(self):
+    def test_suggest_dish_from_meals_with_less_than_five_meals_in_history(self):
 
         self.meal_2.delete()
         self.meal_4.delete()
 
-        suggestions = suggest_dish(current_user=self.user)
+        suggestions = suggest_dish_from_meals(current_user=self.user)
         expected = [self.dish_1, self.dish_3, self.dish_5, self.dish_6]
         self.assertEqual(suggestions, expected)
 
-    def test_suggest_dish_no_meals_available_for_user(self):
+    def test_suggest_dish_from_meals_no_meals_available_for_user(self):
         # Make a different user, who has no Meals or Dishes, so we expect
         # no suggestions for them
 
         another_user = User.objects.create(username="another_user")
 
-        suggestions = suggest_dish(current_user=another_user)
+        suggestions = suggest_dish_from_meals(current_user=another_user)
         expected = []
 
         self.assertEqual(suggestions, expected)
 
-    def test_suggest_dish_no_meals_at_all(self):
+    def test_suggest_dish_from_meals_no_meals_at_all(self):
         Meal.objects.all().delete()
         assert Meal.objects.count() == 0
-        suggestions = suggest_dish(current_user=self.user)
+        suggestions = suggest_dish_from_meals(current_user=self.user)
         expected = []
         self.assertEqual(suggestions, expected)
 
-    def test_suggest_dish_respects_blackout_period(self):
+    def test_suggest_dish_from_meals_respects_blackout_period(self):
         # The blackout period is a number of days before and after the current day
         # so that we don't get suggested things that were recently had, or are
         # scheduled for the future
@@ -137,6 +141,6 @@ class MealSuggestionTests(TestCase):
         self.meal_3.date = two_day_days_hence
         self.meal_3.save()
 
-        suggestions = suggest_dish(current_user=self.user)
+        suggestions = suggest_dish_from_meals(current_user=self.user)
         expected = [self.dish_2, self.dish_4, self.dish_5, self.dish_6]
         self.assertEqual(suggestions, expected)

@@ -73,11 +73,16 @@ class TestDishList(TestCase):
         dest = reverse("dish-list")
         resp = self.client.get(dest, follow=True)
 
-        # Look for the content we expect to be there
-        self.assertContains(resp, "squash risotto")
-        self.assertContains(resp, "chicken risotto")
-        self.assertContains(resp, "baked beans on toast")
-        self.assertContains(resp, "scrambled eggs")
+        # Focus only on the `dishes` data in the context, not the dish_suggestions data
+        dish_results_in_context = resp.context["dishes"]
+
+        # turn the list of Dish objects into title strings, just for easier checking
+        dish_names = [x.title for x in dish_results_in_context]
+
+        self.assertTrue("squash risotto" in dish_names)
+        self.assertTrue("chicken risotto" in dish_names)
+        self.assertTrue("baked beans on toast" in dish_names)
+        self.assertTrue("scrambled eggs" in dish_names)
 
     def test_search_dish_by_title(self):
         # Log in our test user
@@ -91,11 +96,17 @@ class TestDishList(TestCase):
 
         resp = self.client.get(dest, follow=True)
 
-        # Look for the content we expect to be there
-        self.assertContains(resp, "squash risotto")
-        self.assertContains(resp, "chicken risotto")
-        self.assertNotContains(resp, "baked beans on toast")
-        self.assertNotContains(resp, "scrambled eggs")
+        # Focus only on the `dishes` data in the context, not the dish_suggestions data
+        dish_results_in_context = resp.context["dishes"]
+
+        # turn the list of Dish objects into title strings, just for easier checking
+        dish_names = [x.title for x in dish_results_in_context]
+
+        self.assertTrue("squash risotto" in dish_names)
+        self.assertTrue("chicken risotto" in dish_names)
+
+        self.assertFalse("baked beans on toast" in dish_names)
+        self.assertFalse("scrambled eggs" in dish_names)
 
     def test_search_dish_by_text(self):
         # Log in our test user
@@ -109,10 +120,18 @@ class TestDishList(TestCase):
         resp = self.client.get(dest, follow=True)
 
         # Look for the content we expect to be there
-        self.assertContains(resp, "squash risotto")
-        self.assertContains(resp, "baked beans on toast")
-        self.assertNotContains(resp, "chicken risotto")
-        self.assertNotContains(resp, "scrambled eggs")
+
+        # Focus only on the `dishes` data in the context, not the dish_suggestions data
+        dish_results_in_context = resp.context["dishes"]
+
+        # turn the list of Dish objects into title strings, just for easier checking
+        dish_names = [x.title for x in dish_results_in_context]
+
+        self.assertTrue("squash risotto" in dish_names)
+        self.assertTrue("baked beans on toast" in dish_names)
+
+        self.assertFalse("chicken risotto" in dish_names)
+        self.assertFalse("scrambled eggs" in dish_names)
 
     def test_search_dish_no_results(self):
         # Log in our test user
@@ -125,11 +144,16 @@ class TestDishList(TestCase):
         dest = dest + "?q=numberwang"
         resp = self.client.get(dest, follow=True)
 
-        # Look for the content we expect to be there
-        self.assertNotContains(resp, "squash risotto")
-        self.assertNotContains(resp, "baked beans on toast")
-        self.assertNotContains(resp, "chicken risotto")
-        self.assertNotContains(resp, "scrambled eggs")
+        # Focus only on the `dishes` data in the context, not the dish_suggestions data
+        dish_results_in_context = resp.context["dishes"]
+
+        # turn the list of Dish objects into title strings, just for easier checking
+        dish_names = [x.title for x in dish_results_in_context]
+
+        self.assertFalse("squash risotto" in dish_names)
+        self.assertFalse("baked beans on toast" in dish_names)
+        self.assertFalse("chicken risotto" in dish_names)
+        self.assertFalse("scrambled eggs" in dish_names)
 
 
 class TestMealList(TestCase):
