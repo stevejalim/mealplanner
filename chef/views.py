@@ -14,7 +14,7 @@ from django.views.generic import (
 )
 
 from .forms import MealForm
-from .helpers import meals_for_week, first_day_of_week, suggest_dish
+from .helpers import meals_for_week, first_day_of_week, suggest_dishes
 from .models import Dish, Meal
 
 # Create your views here.
@@ -59,7 +59,7 @@ def dish_list(request):
         query = request.GET["q"]
         dishes = dishes.filter(Q(title__icontains=query) | Q(text__icontains=query))
 
-    least_recent_suggested_dishes = suggest_dish(request.user)
+    least_recent_suggested_dishes = suggest_dishes(request.user)
 
     return render(
         request,

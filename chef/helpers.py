@@ -1,3 +1,5 @@
+from django.db.models import Count
+
 from chef.models import Dish, Meal
 from datetime import date, timedelta
 
@@ -45,7 +47,31 @@ def meals_for_week(start_date, current_user):
     return meals_for_dates
 
 
-def suggest_dish(current_user, suggestion_limit=5):
+def suggest_dishes(current_user, overall_suggestion_limit=10):
+
+    rare_dishes = get_rare_dishes(current_user, suggestion_limit=5)
+
+    suggested_dishes_from_meals = suggest_dish_from_meals(
+        current_user,
+        suggestion_limit=overall_suggestion_limit - len(rare_dishes),
+    )
+
+    return rare_dishes + suggested_dishes_from_meals
+
+
+def get_rare_dishes(current_user, suggestion_limit):
+    # Returns a list of Dishes that we consider 'rare': at most used once
+
+    counted_dishes = (
+        Dish.objects.filter(owner=current_user)
+        .annotate(times_used=Count("meal"))
+        .order_by("times_used")
+        .filter(times_used__lte=1)
+    )
+    return list(counted_dishes[:suggestion_limit])
+
+
+def suggest_dish_from_meals(current_user, suggestion_limit=5):
     # Returns a list of Dishes (not Meals),
     # that belong to the current_user
     # ordered by least recent,
