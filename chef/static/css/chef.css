@@ -20,7 +20,7 @@ body.meal-schedule {
 
 li.current-week ul.meal-week li{
 
-    background-color: rgb(255, 255, 136);
+    background-color: rgba(255, 0, 33, 0.2);
 }
 
 ul.meal-week {
