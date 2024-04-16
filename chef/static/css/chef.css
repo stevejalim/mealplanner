@@ -26,8 +26,19 @@ li.current-week ul.meal-week li{
 ul.meal-week {
 
     display: grid;
-    grid-template-columns: repeat(7, minmax(150px, 500px));
     gap: 10px;
+
+    @media(width <= 480px) {
+        grid-template-rows: repeat(7, min-content(120px));
+    }
+
+    @media( 480px < width <= 1140px) {
+        grid-template-columns: repeat(4, minmax(125px, 500px));
+    }
+
+    @media(width > 1140px) {
+        grid-template-columns: repeat(7, minmax(150px, 500px));
+    }
 
     hr {
         border: 1px solid gray;
