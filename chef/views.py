@@ -37,7 +37,11 @@ def meal_schedule(request):
         # now get the relevant meals info for each week and add it to our
         # overall meals dictionary
 
-        # NB: the order things are added to the dictionary is significant
+        # NB: the order things are added to the `meals` dictionary is significant. Modern Python
+        # dictionaries remember the order keys are set, so when we loop through meals.items() we each
+        # week's data in the order we set them in/the order we want to show them in.
+        # This means we don't have to sort them by the date of the first day in each week
+        # when read the `meals` dict.
         meals["Last week"] = meals_for_week(start_of_last_week, request.user)
         meals[current_week_label] = meals_for_week(start_of_this_week, request.user)
         meals["Next week"] = meals_for_week(start_of_next_week, request.user)
