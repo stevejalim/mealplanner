@@ -3,9 +3,12 @@ h2 {
 }
 
 
-.login-buttons {
+.nav-buttons {
     margin-top: 10px;
-    text-align: right;
+
+    a.button.auth {
+        float: right;
+    }
 }
 ul.meal-schedule,
 ul.meal-week {

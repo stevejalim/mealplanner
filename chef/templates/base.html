@@ -20,11 +20,12 @@
 
   <body {% block page_class_attr %}{% endblock page_class_attr %}>
     {% block login_buttons %}
-      <div class="login-buttons">
+      <div class="nav-buttons">
         {% if user.is_authenticated %}
-        <a class="button" href="{% url 'logout' %}">Log out {{user.get_full_name}} </a>
+        <a class="button home" title="Home" href="/">Home</a>
+        <a class="button auth" href="{% url 'logout' %}">Log out {{user.get_full_name}} </a>
         {% else %}
-        <a class="button" href="{% url 'login' %}">Log in</a>
+        <a class="button auth" href="{% url 'login' %}">Log in</a>
         {% endif %}
       </div>
     {% endblock login_buttons %}
