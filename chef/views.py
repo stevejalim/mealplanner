@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import IntegrityError
 from django.db.models import Q
+from django.db.models.functions import Lower
 from django.shortcuts import render, redirect
 from django.urls import reverse, resolve, Resolver404
 from django.utils import timezone
@@ -57,7 +58,7 @@ def meal_schedule(request):
 
 
 def dish_list(request):
-    dishes = Dish.objects.all().order_by("title").filter(owner=request.user)
+    dishes = Dish.objects.all().order_by(Lower("title")).filter(owner=request.user)
 
     if "q" in request.GET:
         query = request.GET["q"]
