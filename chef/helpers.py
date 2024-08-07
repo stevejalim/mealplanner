@@ -66,6 +66,7 @@ def get_rare_dishes(current_user, suggestion_limit):
         Dish.objects.filter(owner=current_user)
         .annotate(times_used=Count("meal"))
         .order_by("times_used")
+        .exclude(exclude_from_suggestions=True)
         .filter(times_used__lte=1)
     )
     return list(counted_dishes[:suggestion_limit])
@@ -78,9 +79,10 @@ def suggest_dish_from_meals(current_user, suggestion_limit=5):
     # limited in number
 
     today = date.today()
-    blackout_start = today - timedelta(days=28)
+    blackout_start = today - timedelta(days=60)
     blackout_end = today + timedelta(days=7)
 
+    # Get meals that are outside of our blackout window
     least_recent_meals = (
         Meal.objects.filter(owner=current_user)
         .exclude(dish__exclude_from_suggestions=True)
@@ -88,14 +90,33 @@ def suggest_dish_from_meals(current_user, suggestion_limit=5):
             date__gte=blackout_start,
             date__lte=blackout_end,
         )
-        .order_by("date")
+        .order_by("-date")
     )
 
-    least_recent_meals = least_recent_meals[:suggestion_limit]
+    # then we need to be sure to prune out any meals that are in the blackout window
+    recent_dish_ids = (
+        Meal.objects.filter(owner=current_user)
+        .exclude(dish__exclude_from_suggestions=True)
+        .filter(  # ie, get INSIDE the blackout window this itme
+            date__gte=blackout_start,
+            date__lte=blackout_end,
+        )
+        .values_list(
+            "dish", flat=True
+        )  # values_list gives us just the ids of the relevant dishes, flat=true gets it to us as a list
+    )
+
+    # Now prune down the least_recent_meals to remove any dishes we DID have in the blackout period
+    pruned_least_recent_meals = []
+    for meal in least_recent_meals:
+        if meal.dish.id not in recent_dish_ids:
+            pruned_least_recent_meals.append(meal)
+
+    pruned_least_recent_meals = pruned_least_recent_meals[:suggestion_limit]
 
     suggested_dishes = []
-    for meal in least_recent_meals:
+    for meal in pruned_least_recent_meals:
         suggested_dishes.append(meal.dish)
     return suggested_dishes
 
-    # or return [meal.dish for meal in least_recent_meals]
+    # or return [meal.dish for meal in pruned_least_recent_meals]
