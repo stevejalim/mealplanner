@@ -6,4 +6,9 @@ from .models import Meal
 
 admin.site.register(Dish)
 
-admin.site.register(Meal)
+
+class MealAdminConfig(admin.ModelAdmin):
+    list_display = ["dish_title", "date"]
+
+
+admin.site.register(Meal, MealAdminConfig)

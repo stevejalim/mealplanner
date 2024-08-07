@@ -47,3 +47,6 @@ class Meal(models.Model):
 
     def __str__(self):
         return f"{self.dish.title} on {self.date}"
+
+    def dish_title(self):
+        return self.dish.title
