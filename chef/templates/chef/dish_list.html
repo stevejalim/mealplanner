@@ -47,7 +47,9 @@ Meal planner
             <a href='{% url "dish-update" dish.id %}'>
                 {{dish.title}}
             </a>
-            (last used: {{dish.get_latest_meal.date|default:"Never!"}})
+            {% if dish.get_latest_meal.date %}
+            – last used: {{dish.get_latest_meal.date}}
+            {% endif %}
 
             <a class="button button-small" href='{% url "meal-add" %}?dish_id={{ dish.id }}'>
                 Plan it!
