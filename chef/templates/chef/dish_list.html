@@ -9,7 +9,7 @@ Meal planner
         <h1>Your dishes</h1>
     </header>
 
-    <form action="." method="get">
+    <form class="search-box" action="." method="get">
         <input name="q" type="text" placeholder="Search..."  value="{{ request.GET.q }}">
 
         <button type="submit">Search</button>
@@ -24,8 +24,9 @@ Meal planner
                 <a href='{% url "dish-update" dish.id %}'>
                   {{dish.title}}
                 </a>
-                <a href='{% url "meal-add" %}?dish_id={{ dish.id }}'>
-                    🥘
+
+                <a class="button button-small" href='{% url "meal-add" %}?dish_id={{ dish.id }}'>
+                    Plan it!
                 </a>
             </li>
         {% endfor %}
@@ -36,7 +37,9 @@ Meal planner
     onclick="location.href='{% url "dish-add"%}?term={{request.GET.q}}'"/>
     </p>
 
-    <h3>DISH SUGGESTIONS:</h3>
+    <h3>Meal inspiration</h3>
+
+    <p class="standfirst">How about these dishes?</p>
 
     <ul>
         {% for dish in dish_suggestions %}
@@ -45,8 +48,9 @@ Meal planner
                 {{dish.title}}
             </a>
             (last used: {{dish.get_latest_meal.date|default:"Never!"}})
-            <a href='{% url "meal-add" %}?dish_id={{ dish.id }}'>
-                🥘
+
+            <a class="button button-small" href='{% url "meal-add" %}?dish_id={{ dish.id }}'>
+                Plan it!
             </a>
         </li>
         {% endfor %}

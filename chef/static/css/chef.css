@@ -1,7 +1,22 @@
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
 h2 {
     font-weight: 200
 }
 
+.standfirst {
+    padding: 0;
+    margin: 0;
+    font-size: 1.4rem;
+}
 
 .nav-buttons {
     margin-top: 10px;
@@ -74,4 +89,15 @@ li.current-week ul.meal-week li{
             border-color: white;
         }
     }
+}
+
+.search-box {
+    margin-top: 20px;
+}
+
+.button.button-small {
+    padding: 1px 5px;
+    opacity: 0.8;
+    margin-left: 6px;
+    font-size: 0.9rem;
 }
