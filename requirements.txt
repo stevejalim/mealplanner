@@ -1,3 +1,4 @@
-Django~=4.2.5
+Django~=4.2.20
+everett==3.4.0
 django-registration==3.3
-python-dotenv
+python-dotenv==1.0.1
